@@ -637,6 +637,7 @@ service qseeproxydaemon /system/vendor/bin/qseeproxydaemon
     user system
     group system
     writepid /dev/cpuset/system-background/tasks
+    disabled
 
 on charger
     setprop persist.sys.usb.config charging
@@ -648,11 +649,11 @@ service fingerprintd /system/bin/fingerprintd
     system system
     writepid /dev/cpuset/system-background/tasks
 
-on property:vold.decrypt=trigger_restart_min_framework
-    start time_daemon
+# on property:vold.decrypt=trigger_restart_min_framework
+#     start time_daemon
 
-on property:vold.decrypt=trigger_restart_framework
-    restart time_daemon
+# on property:vold.decrypt=trigger_restart_framework
+#     restart time_daemon
 
 on property:dev.bootcomplete=1
     setprop sys.io.scheduler "bfq"
