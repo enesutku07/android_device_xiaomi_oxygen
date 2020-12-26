@@ -39,12 +39,11 @@ TARGET_USES_64_BIT_BINDER := true
 
 # Kernel
 BOARD_KERNEL_BASE := 0x80000000
-#BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 androidboot.bootdevice=7824900.sdhci earlycon=msm_hsl_uart,0x78af000 androidboot.selinux=permissive
-BOARD_KERNEL_CMDLINE := selinux=0
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 androidboot.bootdevice=7824900.sdhci earlycon=msm_hsl_uart,0x78af000
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 BOARD_KERNEL_PAGESIZE :=  2048
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
-TARGET_KERNEL_CONFIG := lineageos_oxygen_defconfig
+TARGET_KERNEL_CONFIG := halium_oxygen_defconfig #hybris_oxygen_defconfig
 TARGET_KERNEL_SOURCE := kernel/xiaomi/oxygen
 
 # ANT
@@ -87,7 +86,7 @@ AUDIO_FEATURE_ENABLED_EXT_AMPLIFIER := false
 AUDIO_USE_LL_AS_PRIMARY_OUTPUT := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
-USE_CUSTOM_AUDIO_POLICY := 1
+#USE_CUSTOM_AUDIO_POLICY := 1
 USE_XML_AUDIO_POLICY_CONF := 1
 
 # Bootloader
@@ -123,17 +122,17 @@ BOARD_USES_QCNE := true
 ENABLE_CPUSETS := true
 
 # Crypto
-TARGET_HW_DISK_ENCRYPTION := false # true
+TARGET_HW_DISK_ENCRYPTION := true
 
 # Dexpreopt
-# ifeq ($(HOST_OS),linux)
-# ifneq ($(TARGET_BUILD_VARIANT),eng)
-#     ifeq ($(WITH_DEXPREOPT),)
-#       WITH_DEXPREOPT := true
-#     endif
-#   endif
-# endif
-# WITH_DEXPREOPT_BOOT_IMG_ONLY ?= true
+ifeq ($(HOST_OS),linux)
+  ifneq ($(TARGET_BUILD_VARIANT),eng)
+    ifeq ($(WITH_DEXPREOPT),)
+      WITH_DEXPREOPT := true
+    endif
+  endif
+endif
+WITH_DEXPREOPT_BOOT_IMG_ONLY ?= true
 
 # Display
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
@@ -150,7 +149,7 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
-#FM
+# FM
 BOARD_HAVE_QCOM_FM := true
 TARGET_QCOM_NO_FM_FIRMWARE := true
 
@@ -190,6 +189,8 @@ TARGET_PER_MGR_ENABLED := true
 # Power
 TARGET_POWERHAL_VARIANT := qcom
 
+CAMERA_SERVICE_WANT_UBUNTU_HEADERS := true
+
 # Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
@@ -199,7 +200,7 @@ BOARD_USES_QC_TIME_SERVICES := true
 TARGET_USE_SDCLANG := true
 
 # RIL
-BOARD_RIL_CLASS := ../../../$(DEVICE_PATH)/ril
+BOARD_RIL_CLASS := ../../../$(DEVICE_PATH)/ril #../../../
 TARGET_RIL_VARIANT := caf
 
 # Recovery
@@ -209,13 +210,8 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.qcom
 USE_SENSOR_MULTI_HAL := true
 
 # SELinux
-# include device/qcom/sepolicy/sepolicy.mk
-# BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
-
-# TWRP
-# ifeq ($(WITH_TWRP),true)
-# include $(DEVICE_PATH)/twrp.mk
-# endif
+include device/qcom/sepolicy/sepolicy.mk
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
 # Wi-Fi
 BOARD_HAS_QCOM_WLAN := true
@@ -225,9 +221,14 @@ BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_qcwcn
 BOARD_WLAN_DEVICE := qcwcn
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_qcwcn
-WIFI_DRIVER_FW_PATH_AP := "ap"
-WIFI_DRIVER_FW_PATH_STA := "sta"
-WPA_SUPPLICANT_VERSION := VER_0_8_X
+#WIFI_DRIVER_FW_PATH_AP := "ap"
+#WIFI_DRIVER_FW_PATH_STA := "sta"
+WIFI_DRIVER_FW_PATH_P2P := "p2p"
+WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/wlan.ko"
+WIFI_DRIVER_MODULE_NAME := "wlan"
+
+#allow arm64 libhybris
+HYBRIS_MEDIA_32_BIT_ONLY := false
 
 # Inherit from the proprietary version
 -include vendor/xiaomi/oxygen/BoardConfigVendor.mk
